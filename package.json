@@ -1,7 +1,7 @@
 {
-  "name": "fonts-fontweights",
+  "name": "fonts-fontface",
   "version": "1.0.0",
-  "description": "Get Specific FontWeights for Fonts in your projects..",
+  "description": "Get Specific CSS FontWeights for a Font Family in your projects...",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"
