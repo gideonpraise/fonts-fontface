@@ -1,0 +1,24 @@
+{
+  "name": "fonts-fontweights",
+  "version": "1.0.0",
+  "description": "Get Specific FontWeights for Fonts in your projects..",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "typeface",
+    "font-family",
+    "font-face",
+    "font",
+    "typography"
+  ],
+  "author": "Gideon Adegbesan",
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^3.19.0"
+  },
+  "dependencies": {
+    "then-request": "^6.0.2"
+  }
+}
