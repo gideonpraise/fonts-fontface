@@ -7,13 +7,13 @@ const testApp = async () => {
   console.log(results);
 };
 
-testApp();
+// testApp();
 
 const testList = ["app", "here", "test", "go"];
 
 const DownloadAction = testList => {
   // Testlist here will be the urls (source and destination)
-  Download.now(testList, err => {
+  Download.DownloadFonts(testList, (err, output) => {
     if (err) {
       throw Error(err + " ===> Error from app.js with error code: " + err.code);
     } else {
@@ -22,5 +22,4 @@ const DownloadAction = testList => {
   });
 };
 
-// DownloadAction(testList);
-// Download.testFunc();
+DownloadAction(testList);

@@ -2,7 +2,7 @@
 const { exec, execFile } = require("child_process");
 
 const DownloadFonts = (listOfFontUrls, callback) => {
-  url = "http://qnimate.com/wp-content/uploads/2014/03/imas2.jpg";
+  url = "http://qnimate.com/wp-content/uploads/2014/03/images2.jpg";
   exec(`wget ${url}`, (err, stdout, stderr) => {
     // if (error) {
     //   // console.log(err);
