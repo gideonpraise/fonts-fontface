@@ -2,7 +2,7 @@
 // Download only requested font-weight files and write out css to import them..
 const request = require("then-request");
 const fs = require("fs");
-const DownloadFonts = require("./downloadFonts");
+// const DownloadFonts = require("./downloadFonts");
 
 console.log("Dev started..");
 
@@ -17,9 +17,8 @@ const fetchFontJson = async url => {
     // console.log(jsonData.length);
     return jsonData;
   } catch (err) {
-    console.error("Error from fetching fontJson...");
-    console.error(err);
-    // throw err;
+    console.error("Error from fetching fontsJson...");
+    throw Error(err);
   }
 };
 
@@ -71,7 +70,7 @@ const getTotalFontVariants = async () => {
   console.log(`${getTotalVariants} font-variants..`);
 };
 
-getTotalFontVariants();
+// getTotalFontVariants();
 
 // Map each font to its font-weight variations
 // Usiing 2^n to get the max number of font-weight variations.. where n is the number of font variants..
@@ -85,3 +84,7 @@ getTotalFontVariants();
 
 // Download Packages..
 // DownloadFonts();
+
+// Export Functions
+exports.getFontsList = getFontsList;
+exports.getTotalFontVariants = getTotalFontVariants;

@@ -1,13 +1,18 @@
-const FontIds = require("./fetchFontMappings");
+// Receives list of fonts urls together with its destination and then run WGET to download each font..
+const { exec, execFile } = require("child_process");
 
-const DownloadFonts = async fontIds => {
-  //   const test = await FontIds();
+const DownloadFonts = (listOfFontUrls, callback) => {
+  url = "http://qnimate.com/wp-content/uploads/2014/03/imas2.jpg";
+  exec(`wget ${url}`, (err, stdout, stderr) => {
+    // if (error) {
+    //   // console.log(err);
+    //   callback(error);
+    // } else {
+    //   console.log(stdout);
+    // }
 
-  //   test.forEach(now => {
-  //     console.log(now);
-  //   });
-
-  console.log("i can download...");
+    callback(err, stdout);
+  });
 };
 
-module.exports = DownloadFonts;
+exports.DownloadFonts = DownloadFonts;
