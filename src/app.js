@@ -38,10 +38,9 @@ const App = async () => {
 
     // Time to start creating folders and all....
 
-    // Folder Structure
+    // Folder Structure:
 
     // FOLDER: packages/${id} where id => fontId...
-
     // Before creating a folder, check if the folder is already existing....
     const createPackageDir = () => {
       let packageDir = path.normalize(`${__dirname}/../packages/${id}`);
