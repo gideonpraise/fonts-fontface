@@ -14,7 +14,6 @@ const fetchFontJson = async url => {
     let data = await response.getBody("UTF-8");
     //   Converts response JSOn data to object
     let jsonData = JSON.parse(data);
-    // console.log(jsonData.length);
     return jsonData;
   } catch (err) {
     console.error("Error from fetching fontsJson...");
@@ -45,10 +44,17 @@ const getFontsList = async () => {
         }
       };
     });
-    // console.log(fontVarObj);
-    return fontVarObj;
 
-    //  DownloadFonts()
+    // fontVarObj will be in form of {
+    //   id: string,
+    //   fontFamily: string,
+    //   fontVariants: {
+    //     variants: [],
+    //     total: number
+    //   }
+    // }
+
+    return fontVarObj;
   } catch (err) {
     console.error("Error from mapping FontIds...");
     console.error(err);
