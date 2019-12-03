@@ -19,6 +19,9 @@
     "lerna": "^3.19.0"
   },
   "dependencies": {
+    "async": "^3.1.0",
+    "graceful-fs": "^4.2.3",
+    "shelljs": "^0.8.3",
     "then-request": "^6.0.2"
   }
 }

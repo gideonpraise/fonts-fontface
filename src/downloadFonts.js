@@ -13,7 +13,7 @@ const DownloadFonts = (
   callback
 ) => {
   shell.exec(
-    `wget --no-check-certificate -O ${destPath} ${fontUrl} -t 8`,
+    `curl -# -k ${fontUrl} --output ${destPath}`,
     (err, stdout, stderr) => {
       callback(err, stdout);
     }

@@ -6,4 +6,4 @@ npm-debug.log*
 # Folders
 temp/
 node_modules/
-
+packages/

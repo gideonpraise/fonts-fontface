@@ -1,10 +1,12 @@
 // Components of the app are imported here and executed..
-const fs = require("fs");
+const fs = require("graceful-fs");
 const path = require("path");
-const { exec, execFile } = require("child_process");
+// const { exec, execFile } = require("child_process");
 const FetchFontMappings = require("./fetchFontMappings");
 const Download = require("./downloadFonts");
 const GetFontObj = require("./getFontsObj");
+
+//TODO: Create a log file to log all errors and warnings...
 
 const ListOfFontsIds = async () => {
   const fontsList = await FetchFontMappings.getFontsList();
@@ -14,16 +16,33 @@ const ListOfFontsIds = async () => {
 const DownloadAction = listofFontsUrl => {
   // listofFontsUrl here will be the urls (source and destination)
   listofFontsUrl.forEach(fontItem => {
-    let { fontUrl, destPath } = fontItem;
-    Download(fontUrl, destPath, (err, output) => {
-      if (err) {
-        throw Error(
-          err + " ===> Error from app.js with error code: " + err.code
-        );
-      } else {
-        console.log("Download is working!");
+    let {
+      fontUrl,
+      destPath,
+      fontId,
+      fontWeight,
+      fontStyle,
+      fileExt
+    } = fontItem;
+    Download(
+      fontUrl,
+      destPath,
+      fontId,
+      fontWeight,
+      fontStyle,
+      fileExt,
+      (err, output) => {
+        if (err) {
+          console.error(
+            Error(
+              `${err} \n===> Error while downloading font ==> ${fontId}-${fontWeight}-${fontStyle}--${fileExt}`
+            )
+          );
+        } else {
+          console.log(`${fontId} FOnt Downloading!`);
+        }
       }
-    });
+    );
   });
 };
 
@@ -33,17 +52,13 @@ const App = async () => {
   // This is going to be a large function heh eh!
   // TODO: Abstract all these functions into modules..
   fontIds.forEach(async id => {
-    const fontObj = await GetFontObj(id);
-    // console.log(fontObj);
-
     // Time to start creating folders and all....
-
-    // Folder Structure:
 
     // FOLDER: packages/${id} where id => fontId...
     // Before creating a folder, check if the folder is already existing....
+    let packageDir = path.normalize(`${__dirname}/../packages/${id}`);
+
     const createPackageDir = () => {
-      let packageDir = path.normalize(`${__dirname}/../packages/${id}`);
       fs.exists(packageDir, check => {
         if (!check) {
           fs.mkdir(packageDir, {}, err => {
@@ -61,8 +76,9 @@ const App = async () => {
     };
 
     // // FOLDER: packages/${id}/fonts
+    let fontDir = path.normalize(`${__dirname}/../packages/${id}/fonts`);
+
     const createFontDir = () => {
-      let fontDir = path.normalize(`${__dirname}/../packages/${id}/fonts`);
       fs.exists(fontDir, check => {
         if (check) {
           throw new Error(`${id}/fonts folder is already existing...`);
@@ -88,47 +104,103 @@ const App = async () => {
     // });
 
     createPackageDir();
+
+    const createDestFile = (
+      fontDir,
+      fontId,
+      fontVersion,
+      defSubset,
+      fontWeight,
+      fontStyle,
+      fileExt
+    ) => {
+      let newStyle = "";
+      if (fontStyle !== "normal") {
+        newStyle = fontStyle;
+      }
+
+      const fontFile = `${fontId}-${fontVersion}-${defSubset}-${fontWeight}${newStyle}.${fileExt}`;
+
+      return path.join(fontDir, fontFile);
+    };
+
+    const createlistofFontsUrl = (
+      fontUrl,
+      destPath,
+      fontId,
+      fontWeight,
+      fontStyle,
+      fileExt
+    ) => {
+      const listOfFonts = [];
+      listOfFonts.push({
+        fontUrl,
+        destPath,
+        fontId,
+        fontWeight,
+        fontStyle,
+        fileExt
+      });
+      DownloadAction(listOfFonts);
+    };
+
+    const __getfontObj = async () => {
+      const fontObj = await GetFontObj(id);
+
+      // TODO: Add support for other font charset (subsets) e.g { "greek", "cyrillic", "latin-ext", "greek-ext", "vietnamese" }
+      const fontVersion = fontObj.version;
+      const defSubset = fontObj.defSubset;
+
+      fontObj.variants.forEach(variant => {
+        // TODO: add support for other font types later e.g { svg, eot, ttf }
+        const tempArr = [];
+        const { woff2: woff2, woff: woff } = variant;
+        const { fontStyle, fontWeight } = variant;
+
+        tempArr.push({ woff2, woff });
+        tempArr.forEach(ff => {
+          Object.keys(ff).forEach(ext => {
+            if (ext === "woff2") {
+              createlistofFontsUrl(
+                ff.woff2,
+                createDestFile(
+                  fontDir,
+                  id,
+                  fontVersion,
+                  defSubset,
+                  fontWeight,
+                  fontStyle,
+                  ext
+                ),
+                id,
+                fontWeight,
+                fontStyle,
+                ext
+              );
+            } else {
+              createlistofFontsUrl(
+                ff.woff,
+                createDestFile(
+                  fontDir,
+                  id,
+                  fontVersion,
+                  defSubset,
+                  fontWeight,
+                  fontStyle,
+                  ext
+                ),
+                id,
+                fontWeight,
+                fontStyle
+              );
+            }
+          });
+        });
+      });
+    };
+
+    __getfontObj();
   });
 };
 
 App();
-
-const testFunc = () => {
-  let directory = `${__dirname}/../packages`;
-  // console.log(path.normalize(directory));
-  // console.log(__dirname);
-
-  // Calling App
-  //   App();
-
-  let packageDir = path.normalize(`${__dirname}/../packages/abel`);
-  let fontDir = path.normalize(`${__dirname}/../packages/abel/fonts`);
-  // fs.mkdir(fontDir, {}, err => {
-  //   if (err) throw err;
-  //   console.log("FOlder Created...");
-  // });
-
-  // exec(`ls ${directory}`, (err, stdout, stderr) => {
-  //   if (err) {
-  //     console.error(err);
-  //   } else {
-  //     console.log(stdout);
-  //   }
-  // });
-
-  fs.exists(fontDir, check => {
-    if (check) {
-      throw new Error(`abel/fonts folder is already existing...`);
-    } else {
-      fs.mkdir(fontDir, {}, err => {
-        if (err) throw new Error(err);
-        console.log(`abel/fonts FOlder Created...`);
-      });
-    }
-  });
-
-  // let packageDir = path.normalize(`${__dirname}/../packages/abel`);
-  // console.log(packageDir);
-};
-
-// testFunc();
