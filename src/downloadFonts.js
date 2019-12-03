@@ -1,22 +1,23 @@
 // Receives list of fonts urls together with its destination and then run WGET to download each font..
 const { exec, execFile } = require("child_process");
+const shell = require("shelljs");
 
-const DownloadFonts = (fontUrl, destPath, callback) => {
-  url = "http://qnimate.com/wp-content/uploads/2014/03/images2.jpg";
-  exec(`wget ${url}`, (err, stdout, stderr) => {
-    // if (error) {
-    //   // console.log(err);
-    //   callback(error);
-    // } else {
-    //   console.log(stdout);
-    // }
-
-    if (!err) {
-      console.log(`Downloading fonts`);
+// TODO: Show download progress and percentage...
+const DownloadFonts = (
+  fontUrl,
+  destPath,
+  fontId,
+  fontWeight,
+  fontStyle,
+  fileExt,
+  callback
+) => {
+  shell.exec(
+    `wget --no-check-certificate -O ${destPath} ${fontUrl} -t 8`,
+    (err, stdout, stderr) => {
+      callback(err, stdout);
     }
-
-    callback(err, stdout);
-  });
+  );
 };
 
 // Export function as module
