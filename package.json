@@ -16,7 +16,7 @@
   "author": "Gideon Adegbesan",
   "license": "MIT",
   "devDependencies": {
-    "lerna": "^3.19.0"
+    "lerna": "^6.4.1"
   },
   "dependencies": {
     "async": "^3.1.0",
